@@ -858,7 +858,7 @@ domapread(unsigned offset, unsigned size)
 	}
 
 	if ((p = (char *)mmap(0, map_size, PROT_READ, MAP_FILE | MAP_SHARED, fd,
-			      (off_t)(offset - pg_offset))) == (char *)-1) {
+			      (off_t)(offset - pg_offset))) == MAP_FAILED) {
 		logdump();
 		prterr("domapread: mmap");
 		failure(190);
@@ -1095,7 +1095,7 @@ domapwrite(unsigned offset, unsigned size)
 
 	if ((p = (char *)mmap(0, map_size, PROT_READ | PROT_WRITE,
 			      MAP_FILE | MAP_SHARED, fd,
-			      (off_t)(offset - pg_offset))) == (char *)-1) {
+			      (off_t)(offset - pg_offset))) == MAP_FAILED) {
 		logdump();
 		prterr("domapwrite: mmap");
 		failure(202);
@@ -1454,8 +1454,8 @@ main(int argc, char **argv)
 
 	setvbuf(stdout, (char *)0, _IOLBF, 0); /* line buffered stdout */
 
-	while ((ch = getopt_long(argc, argv, "b:c:d:ef:g:hil:m:no:p:qr:s:t:vw:xCD:F:G:I:LMN:OP:RS:T:W", NULL, NULL))
-	       != EOF)
+	while ((ch = getopt_long(argc, argv, "b:c:d:ef:g:hil:m:no:p:qr:s:t:vw:xyCD:F:G:I:LMN:OP:RS:T:W", NULL, NULL))
+	       != -1)
 		switch (ch) {
 		case 'b':
 			simulatedopcount = getnum(optarg, &endp);
