@@ -1101,7 +1101,7 @@ domapwrite(unsigned offset, unsigned size)
 		failure(202);
 	}
 	memcpy(p + pg_offset, good_buf + offset, size);
-	if (msync(p, map_size, 0) != 0) {
+	if (msync(p, map_size, MS_SYNC) != 0) {
 		logdump();
 		prterr("domapwrite: msync");
 		failure(203);
