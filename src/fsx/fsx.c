@@ -48,12 +48,11 @@
  *
  */
 
-#include <sys/xattr.h>
+#include "fsx.h"
 #include <getopt.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <time.h>
-#include <sys/paths.h>
 #include <sys/param.h>
 #ifdef _UWIN
 # include <limits.h>
@@ -754,15 +753,15 @@ doread(unsigned offset, unsigned size)
 			failure(140);
 		}
 				
-		if (cache_off && (fcntl(fd, F_NOCACHE, 1) != 0)) { // turn data caching off
+		if (cache_off && (fsx_caching_off(fd) != 0)) { // turn data caching off
 			logdump();
-			prterr("doread: fcntl(F_NOCACHE, 1)");
+			prterr("doread: fsx_caching_off()");
 			failure(201);
 		}
 		iret = read(fd, temp_buf, size);
-		if (cache_off && (fcntl(fd, F_NOCACHE, 0) != 0)) {
+		if (cache_off && (fsx_caching_on(fd) != 0)) {
 			logdump();
-			prterr("doread: fcntl(F_NOCACHE, 0)");
+			prterr("doread: fsx_caching_on");
 			failure(201);
 		}
 	} else {
@@ -947,9 +946,9 @@ dowrite(unsigned offset, unsigned size)
 					prterr("dowrite: lseek");
 					failure(150);
 				}
-				if (cache_off && (fcntl(fd, F_NOCACHE, 1) != 0)) { // turn data caching off
+				if (cache_off && (fsx_caching_off(fd) != 0)) { // turn data caching off
 					logdump();
-					prterr("dowrite: fcntl(F_NOCACHE, 1)");
+					prterr("dowrite: fsx_caching_off");
 					failure(201);
 				}
 				iret = write(fd, good_buf + file_size, offset - file_size);
@@ -964,9 +963,9 @@ dowrite(unsigned offset, unsigned size)
 					}
 					failure(151);
 				}
-				if (cache_off && (fcntl(fd, F_NOCACHE, 0) != 0)) {
+				if (cache_off && (fsx_caching_on(fd) != 0)) {
 					logdump();
-					prterr("dowrite: fcntl(F_NOCACHE, 0)");
+					prterr("dowrite: fsx_caching_on");
 					failure(201);
 				}
 			}
@@ -994,9 +993,9 @@ dowrite(unsigned offset, unsigned size)
 			prterr("dowrite: lseek");
 			failure(150);
 		}
-		if (cache_off && (fcntl(fd, F_NOCACHE, 1) != 0)) { // turn data caching off
+		if (cache_off && (fsx_caching_off(fd) != 0)) { // turn data caching off
 			logdump();
-			prterr("dowrite: fcntl(F_NOCACHE, 1)");
+			prterr("dowrite: fsx_caching_off");
 			failure(201);
 		}
 		iret = write(fd, good_buf + offset, size);
@@ -1011,9 +1010,9 @@ dowrite(unsigned offset, unsigned size)
 			}
 			failure(151);
 		}
-		if (cache_off && (fcntl(fd, F_NOCACHE, 0) != 0)) {
+		if (cache_off && (fsx_caching_on(fd) != 0)) {
 			logdump();
-			prterr("dowrite: fcntl(F_NOCACHE, 0)");
+			prterr("dowrite: fsx_caching_on");
 			failure(201);
 		}
 	} else {
